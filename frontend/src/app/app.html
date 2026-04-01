@@ -1,0 +1,103 @@
+<main class="shell">
+  <section class="hero">
+    <div>
+      <p class="eyebrow"></p>
+      <h1>Task Management Tool</h1>
+      <p class="hero-copy">
+        Create, edit, delete, and filter tasks with a live search box that narrows results
+        instantly as you type.
+      </p>
+    </div>
+    <div class="hero-stat">
+      <span>{{ visibleTasks.length }}</span>
+      <p>tasks matching your current search and filter</p>
+    </div>
+  </section>
+
+  <section class="workspace">
+    <form class="editor-card" (ngSubmit)="saveTask()">
+      <div class="card-header">
+        <div>
+          <p class="section-kicker">{{ editingTaskId === null ? 'New task' : 'Editing task' }}</p>
+          <h2>{{ editingTaskId === null ? 'Capture the next thing to do' : 'Update this task' }}</h2>
+        </div>
+      </div>
+
+      <label class="field">
+        <span>Title</span>
+        <input type="text" name="title" [(ngModel)]="title" placeholder="Prepare sprint notes" maxlength="120" />
+      </label>
+
+      <label class="field">
+        <span>Description</span>
+        <textarea name="description" [(ngModel)]="description" rows="4"
+          placeholder="Add context, blockers, or a short checklist"></textarea>
+      </label>
+
+      <div class="actions">
+        <button type="submit" [disabled]="isSaving">
+          {{ isSaving ? 'Saving...' : editingTaskId === null ? 'Add task' : 'Save changes' }}
+        </button>
+        @if (editingTaskId !== null) {
+        <button type="button" class="ghost" (click)="cancelEdit()">Cancel</button>
+        }
+      </div>
+
+      @if (errorMessage) {
+      <p class="message error">{{ errorMessage }}</p>
+      }
+    </form>
+
+    <section class="list-card">
+      <div class="toolbar">
+        <label class="search-field">
+          <span>Search</span>
+          <input type="search" name="search" [(ngModel)]="searchTerm" (ngModelChange)="applyFilters()"
+            placeholder="Search by title or description" />
+        </label>
+
+        <label class="filter-field">
+          <span>Status</span>
+          <select name="status" [(ngModel)]="selectedStatus" (ngModelChange)="applyFilters()">
+            <option value="all">All</option>
+            <option value="open">Open</option>
+            <option value="completed">Completed</option>
+          </select>
+        </label>
+      </div>
+
+      @if (isLoading) {
+      <p class="message">Loading tasks...</p>
+      } @else if (visibleTasks.length === 0) {
+      <p class="message">No tasks match the current search or filter.</p>
+      } @else {
+      <div class="task-list">
+        @for (task of visibleTasks; track trackByTaskId($index, task)) {
+        <article class="task-item" [class.completed]="task.status === 'completed'">
+          <div class="task-main">
+            <button type="button" class="status-toggle" (click)="toggleStatus(task)"
+              [attr.aria-label]="task.status === 'completed' ? 'Mark as open' : 'Mark as completed'">
+              <span></span>
+            </button>
+
+            <div class="task-copy">
+              <div class="task-heading">
+                <h3>{{ task.title }}</h3>
+                <span class="status-pill">{{ task.status }}</span>
+              </div>
+              <p>{{ task.description || 'No description added yet.' }}</p>
+              <small>{{ formatTimeAgo(task.createdAt) }}</small>
+            </div>
+          </div>
+
+          <div class="task-actions">
+            <button type="button" class="ghost" (click)="editTask(task)">Edit</button>
+            <button type="button" class="ghost danger" (click)="deleteTask(task.id)">Delete</button>
+          </div>
+        </article>
+        }
+      </div>
+      }
+    </section>
+  </section>
+</main>

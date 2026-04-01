@@ -1,0 +1,28 @@
+task-manager/
+├── backend/
+│   ├── main.py
+│   ├── database.py
+│   ├── models.py
+│   ├── schemas.py
+│   └── requirements.txt
+└── frontend/
+    ├── src/
+    
+    │   ├── components/
+    │   │   ├── TaskList.tsx
+    │   │   ├── TaskItem.tsx
+    │   │   ├── TaskForm.tsx
+    │   │   └── Sea
+    rchBar.tsx
+    │   ├── hooks/
+    │   │   └── useTasks.ts
+    │   ├── utils/
+    │   │   └── timeAgo.ts
+    │   ├── types/
+    │   │   └── task.ts
+    │   ├── api/
+    │   │   └── taskApi.ts
+    │   ├── App.tsx
+    │   ├── App.css
+    │   └── main.tsx
+    └── package.json
